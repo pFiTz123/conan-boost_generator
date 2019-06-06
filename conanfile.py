@@ -15,19 +15,25 @@ import sys
 # when there is another class derived from "generator" present.
 
 
+def _version(version):
+    return version.replace(".", "_")
+
+
 class BoostGenerator(ConanFile):
     name = "boost_generator"
-    version = "1.67.0"
+    version = "1.70.0"
     url = "https://github.com/bincrafters/conan-boost_generator"
-    description = "Conan build generator for boost libraries http://www.boost.org/doc/libs/1_67_0/libs/libraries.htm"
+    description = "Conan build generator for boost libraries http://www.boost.org/doc/libs/%s/libs/libraries.htm" % _version(version)
     license = "BSL"
     exports = "boostcpp.jam", "jamroot.template", "project-config.template.jam"
-    requires = "boost_build/1.67.0@bincrafters/stable"
+    requires = "boost_build/%s@fizzled/stable" % version
 
 # Below is the actual generator code
 
 
 class boost(Generator):
+
+
 
     @property
     def filename(self):
@@ -195,6 +201,8 @@ class boost(Generator):
         if self.settings.compiler == "Visual Studio":
             if self.settings.compiler.version == "15":
                 return "14.1"
+            elif self.settings.compiler.version == "16":
+                return "14.2"
             else:
                 return str(self.settings.compiler.version) + ".0"
         else:
